@@ -9,46 +9,51 @@ function SimpleHtmlPrecompiler(staticDir, paths, options) {
   this.options = options || {}
 }
 
-SimpleHtmlPrecompiler.prototype.apply = function (compiler) {
-  var self = this
-  compiler.plugin('after-emit', function (compilation, done) {
+SimpleHtmlPrecompiler.prototype.apply = compiler => {
+  compiler.plugin('after-emit', (compilation, done) => {
     Promise.all(
-        self.paths.map(function (outputPath) {
-          return new Promise(function (resolve, reject) {
-            compileToHTML(self.staticDir, outputPath, self.options, function (prerenderedHTML) {
-              if (self.options.postProcessHtml) {
-                prerenderedHTML = self.options.postProcessHtml({
+      this.paths.map(outputPath => {
+        return new Promise((resolve, reject) => {
+          compileToHTML(
+            this.staticDir,
+            outputPath,
+            this.options,
+            prerenderedHTML => {
+              if (this.options.postProcessHtml) {
+                prerenderedHTML = this.options.postProcessHtml({
                   html: prerenderedHTML,
                   route: outputPath
                 })
               }
-              var folder = Path.join(self.options.outputDir || self.staticDir, outputPath)
-              mkdirp(folder, function (error) {
+              var folder = Path.join(
+                this.options.outputDir || this.staticDir,
+                outputPath
+              )
+              mkdirp(folder, error => {
                 if (error) {
-                  return reject('Folder could not be created: ' + folder + '\n' + error)
+                  return reject(
+                    'Folder could not be created: ' + folder + '\n' + error
+                  )
                 }
                 var file = Path.join(folder, 'index.html')
-                FS.writeFile(
-                  file,
-                  prerenderedHTML,
-                  function (error) {
-                    if (error) {
-                      return reject('Could not write file: ' + file + '\n' + error)
-                    }
-                    resolve()
+                FS.writeFile(file, prerenderedHTML, error => {
+                  if (error) {
+                    return reject(
+                      'Could not write file: ' + file + '\n' + error
+                    )
                   }
-                )
+                  resolve()
+                })
               })
-            })
-          })
+            }
+          )
         })
-      )
-      .then(function () {
-        done()
       })
-      .catch(function (error) {
+    )
+      .then(done)
+      .catch(error => {
         // setTimeout prevents the Promise from swallowing the throw
-        setTimeout(function () {
+        setTimeout(() => {
           throw error
         })
       })

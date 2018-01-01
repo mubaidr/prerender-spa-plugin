@@ -2,9 +2,9 @@
 
 Demonstrates usage of Vuejs 2.0 with Vue Router and Webpack 2. Build will generate 3 static routes at the following paths:
 
-- `/`
-- `/about`
-- `/contact`
+* `/`
+* `/about`
+* `/contact`
 
 ## Build
 
@@ -36,9 +36,9 @@ python -m SimpleHTTPServer 8000
 
 Now try the following routes in your browser (note the trailing slash):
 
-- [http://localhost:8000](http://localhost:8000/)
-- [http://localhost:8000/about/](http://localhost:8000/about/)
-- [http://localhost:8000/contact/](http://localhost:8000/contact/)
+* [http://localhost:8000](http://localhost:8000/)
+* [http://localhost:8000/about/](http://localhost:8000/about/)
+* [http://localhost:8000/contact/](http://localhost:8000/contact/)
 
 ## Development
 
@@ -47,8 +47,3 @@ cd prerender-spa-plugin/examples/vue2-webpack-router
 npm install
 npm run dev
 ```
-
-
-
-
-

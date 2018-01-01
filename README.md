@@ -13,25 +13,25 @@
 
 SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 2 problems people are typically trying to solve with either of these strategies:
 
-1. __SEO__: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
-2. __Slow clients__: When users are accessing your site on a bad Internet connection, you want to be able to show them content as soon as possible, even before all your JS is downloaded and parsed.
-3. __OpenGraph / Social Metadata__: Facebook, Twitter, and networks that prefetch metadata to render rich previews are particularly sensitive to asynchronously rendered content. Often, they will fail to fetch unique metadata about your page unless the `<meta>` tags are statically rendered.
+1. **SEO**: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
+2. **Slow clients**: When users are accessing your site on a bad Internet connection, you want to be able to show them content as soon as possible, even before all your JS is downloaded and parsed.
+3. **OpenGraph / Social Metadata**: Facebook, Twitter, and networks that prefetch metadata to render rich previews are particularly sensitive to asynchronously rendered content. Often, they will fail to fetch unique metadata about your page unless the `<meta>` tags are statically rendered.
 
 Prerendering can improve SEO just as well as SSR, with significantly less setup. As for slow clients, prerendering can serve content even faster and for much cheaper, as a global CDN is much less expensive than globally distributed servers.
 
 Now, here's where prerendering _isn't_ appropriate:
 
-- __User-specific content__: For a route like `/my-profile`, prerendering won't be effective, because the content of that page will be very different depending on who's looking at it. You can sometimes update your routing strategy to compensate, e.g. with `/users/:username/profile`, but only if these are public profiles. Otherwise, you risk leaking private information to the world.
-- __Frequently changing content__: If you prerender something like a game leaderboard that's constantly updating with new player rankings, prerendering will display old content until the client-side JS takes over with the latest data. This could be jarring to users. As a potential solution, you could set your build to re-prerender every minute or so. Netlify and some other static hosts provide webhooks you can use to trigger rebuilds for purposes like this. For data that updates even more frequently every minute, you should avoid prerendering.
-- __Thousands of routes__: I wouldn't recommend prerendering thousands of routes, as this could add an hour or more to your build process. Yikes!
+* **User-specific content**: For a route like `/my-profile`, prerendering won't be effective, because the content of that page will be very different depending on who's looking at it. You can sometimes update your routing strategy to compensate, e.g. with `/users/:username/profile`, but only if these are public profiles. Otherwise, you risk leaking private information to the world.
+* **Frequently changing content**: If you prerender something like a game leaderboard that's constantly updating with new player rankings, prerendering will display old content until the client-side JS takes over with the latest data. This could be jarring to users. As a potential solution, you could set your build to re-prerender every minute or so. Netlify and some other static hosts provide webhooks you can use to trigger rebuilds for purposes like this. For data that updates even more frequently every minute, you should avoid prerendering.
+* **Thousands of routes**: I wouldn't recommend prerendering thousands of routes, as this could add an hour or more to your build process. Yikes!
 
 <br>
 
 ### Example Projects
 
-- **[Vuejs 2.x with vue-router](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue2-webpack-router/README.md)**
+* **[Vuejs 2.x with vue-router](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue2-webpack-router/README.md)**
 
-- [Vuejs 1.x simple barebones](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue-webpack-simple/README.md)
+* [Vuejs 1.x simple barebones](https://github.com/chrisvfritz/prerender-spa-plugin/blob/master/examples/vue-webpack-simple/README.md)
 
 <br>
 
@@ -39,7 +39,7 @@ Now, here's where prerendering _isn't_ appropriate:
 
 ### Webpack (Simple)
 
-``` js
+```js
 // webpack.conf.js
 var path = require('path')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
@@ -51,7 +51,7 @@ module.exports = {
       // Absolute path to compiled SPA
       path.join(__dirname, '../dist'),
       // List of routes to prerender
-      [ '/', '/about', '/contact' ]
+      ['/', '/about', '/contact']
     )
   ]
 }
@@ -59,13 +59,12 @@ module.exports = {
 
 ### Webpack (Advanced)
 
-``` js
+```js
 // webpack.conf.js
 var path = require('path')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
 
 module.exports = {
-
   // ...
 
   plugins: [
@@ -73,7 +72,7 @@ module.exports = {
       // (REQUIRED) Absolute path to static root
       path.join(__dirname, 'relative/path/to/static/root'),
       // (REQUIRED) List of routes to prerender
-      [ '/', '/about', '/contact' ],
+      ['/', '/about', '/contact'],
       // (OPTIONAL) Options
       {
         // NOTE: Unless you are relying on asynchronously rendered content,
@@ -104,7 +103,7 @@ module.exports = {
 
         // Instead of loudly failing on JS errors (the default), ignore them.
         ignoreJSErrors: true,
-        
+
         // path of index file. By default it's index.html in static root.
         indexPath: path.resolve('/dist/path/to/index.html'),
 
@@ -129,13 +128,13 @@ module.exports = {
         phantomPageSettings: {
           loadImages: true
         },
-        
+
         // http://phantomjs.org/api/webpage/property/viewport-size.html
         phantomPageViewportSize: {
           width: 1280,
           height: 800
         },
-        
+
         // Manually transform the HTML for each page after prerendering,
         // for example to set the page title and metadata in edge cases
         // where you cannot handle this via your routing solution.
@@ -147,7 +146,7 @@ module.exports = {
         //            e.g. "/", "/about", or "/contact")
         //
         // Whatever is returned will be printed to the prerendered file.
-        postProcessHtml: function (context) {
+        postProcessHtml: function(context) {
           var titles = {
             '/': 'Home',
             '/about': 'Our Story',
@@ -180,24 +179,24 @@ new HtmlWebpackPlugin({
 })
 ```
 
-### Tips 
- 
+### Tips
+
 If you have code that relies on the existence of `<body>` (and you almost certainly do), simply run it in a callback to the `DOMContentLoaded` event:
 
 ```js
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   // your code
 })
 ```
 
 For example, if you're using Vue.js and mounting to a `<div id="app">` in `<body>`:
 
-``` js
+```js
 var root = new Vue({
   // ...
 })
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   root.$mount('#app')
 })
 ```
@@ -220,11 +219,10 @@ npm rebuild
 
 ### Caveats
 
-- Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
-- The frontend rendering library must be capable of taking over after prerendering
-  - __Vue 1.x__: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
-  - __Vue 2.x__: Make sure the root component has the same id as the element it's replacing
-
+* Only works with routing strategies using the HTML5 history API. No hash(bang) URLs.
+* The frontend rendering library must be capable of taking over after prerendering
+  * **Vue 1.x**: Make sure to use [`replace: false`](http://vuejs.org/api/#replace) for root components
+  * **Vue 2.x**: Make sure the root component has the same id as the element it's replacing
 
 <br>
 

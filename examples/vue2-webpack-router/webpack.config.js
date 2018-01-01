@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var PrerenderSpaPlugin = require('prerender-spa-plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
@@ -14,12 +14,12 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -32,12 +32,12 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      vue$: 'vue/dist/vue.esm.js'
     }
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: false,
+    noInfo: false
   },
   devtool: '#eval-source-map'
 }
@@ -59,7 +59,7 @@ if (process.env.NODE_ENV === 'production') {
       // Absolute path to compiled SPA
       path.resolve(__dirname, './dist'),
       // List of routes to prerender
-      [ '/', '/about', '/contact' ],
+      ['/', '/about', '/contact'],
       {
         // options
       }
@@ -78,6 +78,6 @@ if (process.env.NODE_ENV === 'production') {
       template: 'index.html',
       filename: 'index.html',
       favicon: 'favicon.ico'
-    }),
+    })
   ])
 }

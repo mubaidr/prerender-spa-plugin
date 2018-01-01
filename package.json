@@ -6,19 +6,19 @@
   "author": "Chris Fritz",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.5.0",
-    "core-js": "^2.5.1",
-    "hapi": "^16.6.2",
-    "inert": "^4.2.1",
+    "async": "^2.6.0",
+    "core-js": "^2.5.3",
+    "hapi": "^17.2.0",
+    "inert": "^5.0.1",
     "lodash.defaultsdeep": "^4.6.0",
     "mkdirp": "^0.5.1",
-    "phantomjs-prebuilt": "^2.1.15",
+    "phantomjs-prebuilt": "^2.1.16",
     "portfinder": "^1.0.13"
   },
   "devDependencies": {
-    "eslint": "^4.8.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-promise": "^3.5.0",
+    "eslint": "^4.14.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1"
   },
   "engines": {
