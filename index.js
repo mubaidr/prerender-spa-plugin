@@ -1,54 +1,54 @@
-var FS = require('fs')
-var Path = require('path')
-var mkdirp = require('mkdirp')
-var compileToHTML = require('./lib/compile-to-html')
+const FS = require('fs')
+const Path = require('path')
+const mkdirp = require('mkdirp')
+const compileToHTML = require('./lib/compile-to-html')
 
-function SimpleHtmlPrecompiler(staticDir, paths, options) {
+function SimpleHtmlPrecompiler (staticDir, paths, options) {
   this.staticDir = staticDir
   this.paths = paths
   this.options = options || {}
 }
 
-SimpleHtmlPrecompiler.prototype.apply = compiler => {
+// eslint-disable-next-line
+SimpleHtmlPrecompiler.prototype.apply = function(compiler) {
   compiler.plugin('after-emit', (compilation, done) => {
     Promise.all(
-      this.paths.map(outputPath => {
-        return new Promise((resolve, reject) => {
-          compileToHTML(
-            this.staticDir,
-            outputPath,
-            this.options,
-            prerenderedHTML => {
-              if (this.options.postProcessHtml) {
-                prerenderedHTML = this.options.postProcessHtml({
-                  html: prerenderedHTML,
-                  route: outputPath
+      this.paths.map(
+        outputPath =>
+          new Promise((resolve, reject) => {
+            compileToHTML(
+              this.staticDir,
+              outputPath,
+              this.options,
+              prerenderedHTML => {
+                let prerenderedHTMLProcessed
+                if (this.options.postProcessHtml) {
+                  prerenderedHTMLProcessed = this.options.postProcessHtml({
+                    html: prerenderedHTML,
+                    route: outputPath
+                  })
+                }
+                const folder = Path.join(
+                  this.options.outputDir || this.staticDir,
+                  outputPath
+                )
+                mkdirp(folder, error => {
+                  if (error) {
+                    return reject(error)
+                  }
+                  const file = Path.join(folder, 'index.html')
+                  FS.writeFile(file, prerenderedHTMLProcessed, err => {
+                    if (err) {
+                      return reject(err)
+                    }
+                    return resolve()
+                  })
+                  return true
                 })
               }
-              var folder = Path.join(
-                this.options.outputDir || this.staticDir,
-                outputPath
-              )
-              mkdirp(folder, error => {
-                if (error) {
-                  return reject(
-                    'Folder could not be created: ' + folder + '\n' + error
-                  )
-                }
-                var file = Path.join(folder, 'index.html')
-                FS.writeFile(file, prerenderedHTML, error => {
-                  if (error) {
-                    return reject(
-                      'Could not write file: ' + file + '\n' + error
-                    )
-                  }
-                  resolve()
-                })
-              })
-            }
-          )
-        })
-      })
+            )
+          })
+      )
     )
       .then(done)
       .catch(error => {
