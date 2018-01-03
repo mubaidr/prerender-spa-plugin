@@ -7,8 +7,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}\\index.js"
+      "name": "Start Debug",
+      "program": "${workspaceFolder}\\index.js",
+      "env": {
+        "NODE_ENV": "DEBUG"
+      }
     }
   ]
 }

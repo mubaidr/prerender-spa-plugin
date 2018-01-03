@@ -3,61 +3,37 @@ const Path = require('path')
 const mkdirp = require('mkdirp')
 const compileToHTML = require('./lib/compile-to-html')
 
-function SimpleHtmlPrecompiler (staticDir, paths, options) {
+function SimpleHtmlPrecompiler (staticDir, routes, options) {
   this.staticDir = staticDir
-  this.paths = paths
+  this.routes = routes
   this.options = options || {}
+
+  if (!this.options.outputDir) {
+    this.options.outputDir = Path.join(staticDir, '../', 'dist-pre-rendered')
+  }
 }
 
 // eslint-disable-next-line
-SimpleHtmlPrecompiler.prototype.apply = function(compiler) {
-  compiler.plugin('after-emit', (compilation, done) => {
-    Promise.all(
-      this.paths.map(
-        outputPath =>
-          new Promise((resolve, reject) => {
-            compileToHTML(
-              this.staticDir,
-              outputPath,
-              this.options,
-              prerenderedHTML => {
-                let prerenderedHTMLProcessed
-                if (this.options.postProcessHtml) {
-                  prerenderedHTMLProcessed = this.options.postProcessHtml({
-                    html: prerenderedHTML,
-                    route: outputPath
-                  })
-                }
-                const folder = Path.join(
-                  this.options.outputDir || this.staticDir,
-                  outputPath
-                )
-                mkdirp(folder, error => {
-                  if (error) {
-                    return reject(error)
-                  }
-                  const file = Path.join(folder, 'index.html')
-                  FS.writeFile(file, prerenderedHTMLProcessed, err => {
-                    if (err) {
-                      return reject(err)
-                    }
-                    return resolve()
-                  })
-                  return true
-                })
-              }
-            )
-          })
-      )
-    )
-      .then(done)
-      .catch(error => {
-        // setTimeout prevents the Promise from swallowing the throw
-        setTimeout(() => {
-          throw error
+SimpleHtmlPrecompiler.prototype.apply = function() {
+  this.routes.forEach(route => {
+    compileToHTML(this.staticDir, route, this.options, html => {
+      const folder = Path.join(this.options.outputDir, route)
+      const file = Path.join(folder, 'index.html')
+      let htmlProcessed = html
+
+      if (this.options.postProcessHtml) {
+        htmlProcessed = this.options.postProcessHtml({
+          html,
+          route
         })
-      })
+      }
+
+      mkdirp.sync(folder)
+      FS.writeFileSync(file, htmlProcessed)
+    })
   })
 }
 
-module.exports = SimpleHtmlPrecompiler
+// Debug code start
+new SimpleHtmlPrecompiler('../gh-pages/dist', ['/']).apply()
+// Debug code end
