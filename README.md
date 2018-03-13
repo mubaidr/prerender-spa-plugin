@@ -11,6 +11,8 @@
 
 ## Prerendering vs Server-Side Rendering (SSR)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mubaidr/prerender-spa-plugin.svg)](https://greenkeeper.io/)
+
 SSR is, like, _super_ hot right now. Personally though, I think it's overrated. It can significantly increase the complexity of your application and for many use cases, prerendering is a simpler and more appropriate solution. These are the top 2 problems people are typically trying to solve with either of these strategies:
 
 1. **SEO**: When content is loaded asynchronously, crawlers won't wait for it to be loaded.
