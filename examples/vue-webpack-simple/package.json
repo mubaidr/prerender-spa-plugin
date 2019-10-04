@@ -2,14 +2,17 @@
   "name": "prerender-spa-plugin-example-vue-simple",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack --progress --hide-modules --config webpack.config.js"
+    "build": "webpack --progress --hide-modules --config webpack.config.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
-    "prerender-spa-plugin":
-      "git://github.com/chrisvfritz/prerender-spa-plugin.git"
+    "prerender-spa-plugin": "git://github.com/chrisvfritz/prerender-spa-plugin.git",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^1.1.1",
     "webpack": "^1.12.14"
-  }
+  },
+  "snyk": true
 }
